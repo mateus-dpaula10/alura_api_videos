@@ -3,7 +3,7 @@ const searchVideos = document.querySelector('.pesquisar__input')
 const categoriaVideos = document.querySelectorAll('.superior__item')
 
 async function consomeApi() {
-    const api = await fetch('http://localhost:3000/videos')
+    const api = await fetch('https://alura-api-videos.vercel.app/backend/videos.json')
     const videos = await api.json()
 
     try {
