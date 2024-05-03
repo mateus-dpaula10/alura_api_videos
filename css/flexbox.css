@@ -78,10 +78,27 @@
 .videos__item {
   display: block;
   height: 303px;
-  width: 280px;
-  flex-grow: 1;
+  width: calc(25% - .5rem);
+  /* flex-grow: 1; */
 }
 
+@media (max-width: 800px) {
+  .videos__item {
+    width: calc(33.33% - .5rem);
+  }
+}
+
+@media (max-width: 600px) {
+  .videos__item {
+    width: calc(50% - .5rem);
+  }
+}
+
+@media (max-width: 400px) {
+  .videos__item {
+    width: 100%;
+  }
+}
 
 .descricao-video {
   margin-top: 1rem;

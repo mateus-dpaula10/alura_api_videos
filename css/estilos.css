@@ -270,6 +270,12 @@ body {
     transition: .5s;
 }
 
+.superior__item.active {
+    color: var(--branco);
+    background-color: var(--azul-destaque-light);
+    transition: .5s;
+}
+
 .superior__slider {
     position: absolute;
     right: 0%;

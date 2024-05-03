@@ -1,74 +1,64 @@
-const mainVideos = document.querySelector('.videos__container')
+const videosContainer = document.querySelector('.videos__container')
 const searchVideos = document.querySelector('.pesquisar__input')
-const btnCategorias = document.querySelectorAll('.superior__item')
-const videos = document.querySelectorAll('.videos__item')
+const categoriaVideos = document.querySelectorAll('.superior__item')
 
 async function consomeApi() {
+    const api = await fetch('http://localhost:3000/videos')
+    const videos = await api.json()
+
     try {
-        const api = await fetch('http://localhost:3000/videos')
-        const videos = await api.json()
-        
         videos.forEach(video => {
-            if (video.categoria === '') {
-                throw new Error('Vídeo')
-            }
-            mainVideos.innerHTML += `
-                <li class="videos__item">
-                    <iframe src="${video.url}" title="${video.titulo}" frameborder="0" allowfullscreen></iframe>
-                    <div class="descricao-video">
-                        <img class="img-canal" src="./img/sidebar/Avatar_Alura.png" alt="Ícone Alura">
-                        <h3 class="titulo-video">${video.titulo}</h3>
-                        <p class="titulo-canal">${video.descricao}</p>
-                        <p class="categoria" hidden>${video.categoria}</p>
-                    </div>
-                </li>
+            const li = document.createElement('li')
+            li.classList.add('videos__item')
+            li.innerHTML = `
+                <iframe src="${video.url}" title="${video.titulo}" frameborder="0" allowfullscreen></iframe>
+                <div class="descricao-video">
+                    <img class="img-canal" src="./img/sidebar/Avatar_Alura.png" alt="Ícone Alura">
+                    <h5 class="titulo-video">${video.titulo}</h5>
+                    <p class="titulo-canal">${video.descricao}</p>
+                    <p class="categoria-video" hidden>${video.categoria}</p>
+                </div>
             `
+            videosContainer.append(li)
         })
     } catch(error) {
         searchVideos.innerHTML = `
             <p>Houve um erro ao carregar os vídeos: ${error}</p>
         `
     } finally {
-        console.log('Tentativa de carregar vídeos finalizada.')
+        console.log('Sucesso ao carregar os vídeos!')
     }
 }
 
 consomeApi()
 
-searchVideos.addEventListener('input', filtraPesquisa)
+searchVideos.addEventListener('input', filtrarVideos)
 
-function filtraPesquisa() {    
-    let busca = searchVideos.value.toLowerCase()
+function filtrarVideos() {
+    let tituloBusca = searchVideos.value.toLowerCase()
 
-    videos.forEach(video => {
+    document.querySelectorAll('.videos__item').forEach(video => {
         let titulo = video.querySelector('.titulo-video').textContent.toLowerCase()
-        video.style.display = titulo.includes(busca) ? 'block' : 'none'
+        video.style.display = titulo.includes(tituloBusca) ? 'block' : 'none'
     })
 }
 
-btnCategorias.forEach((botao) => {
+categoriaVideos.forEach(botao => {
     let nomeCategoria = botao.getAttribute('name')
     botao.addEventListener('click', () => filtraPorCategoria(nomeCategoria))
 })
 
-function filtraPorCategoria(filtro) {    
-    for (let video of videos) {
+function filtraPorCategoria(filtro) {
+    document.querySelectorAll('.videos__item').forEach(video => {
         let valorFiltro = filtro.toLowerCase()
-        let categoria = video.querySelector('.categoria').textContent.toLowerCase()
+        let categoria = video.querySelector('.categoria-video').textContent.toLowerCase()
 
-        if (!categoria.includes(valorFiltro) && valorFiltro != 'tudo') {
-            video.style.display = 'none'
+        if (categoria.includes(valorFiltro) && valorFiltro != 'tudo') {
+            video.style.display = 'block'    
+        } else if (valorFiltro == 'tudo') {
+            video.style.display = 'block'    
         } else {
-            video.style.display = 'block'
+            video.style.display = 'none'        
         }
-    }
-    // videos.forEach(video => {
-    //     let categoria = video.querySelector('.categoria').textContent.toLowerCase()
-
-    //     if (!categoria.includes(filtro)) {
-    //         video.style.display = 'none'
-    //     } else {
-    //         video.style.display = 'block'
-    //     }
-    // })
+    })
 }
